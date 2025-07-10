@@ -1,0 +1,79 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: kenyan-food-delivery
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/ingress-status: all
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "100"
+        run.googleapis.com/cpu-throttling: "false"
+        run.googleapis.com/memory: "512Mi"
+        run.googleapis.com/cpu: "1"
+        run.googleapis.com/execution-environment: gen2
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      containers:
+      - image: gcr.io/PROJECT_ID/kenyan-food-delivery:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ENVIRONMENT
+          value: production
+        - name: PORT
+          value: "8080"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: DATABASE_URL
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: JWT_SECRET
+        - name: MPESA_CONSUMER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: MPESA_CONSUMER_KEY
+        - name: MPESA_CONSUMER_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: MPESA_CONSUMER_SECRET
+        - name: MPESA_PASSKEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: MPESA_PASSKEY
+        - name: MPESA_BUSINESS_SHORT_CODE
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: MPESA_BUSINESS_SHORT_CODE
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3

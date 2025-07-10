@@ -1,0 +1,74 @@
+# Git
+.git
+.gitignore
+.github
+
+# Documentation
+README.md
+docs/
+*.md
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+kenyan-food-delivery
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Scripts
+scripts/
+deploy.sh
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+
+# Database files
+*.db
+*.sqlite
+
+# Uploads
+uploads/
+
+# Node modules (if any)
+node_modules/
+
+# Coverage reports
+coverage.html
+coverage.out
