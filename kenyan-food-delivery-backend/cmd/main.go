@@ -90,6 +90,7 @@ func setupRoutes(router *gin.Engine, h *handlers.Handler) {
 			auth.GET("/verify-email", h.VerifyEmailLink) // For email links
 			auth.POST("/forgot-password", h.ForgotPassword)
 			auth.POST("/reset-password", h.ResetPassword)
+			auth.GET("/reset-password", h.ResetPasswordLink) // For password reset links
 			auth.POST("/resend-verification", h.ResendVerificationEmail)
 		}
 
