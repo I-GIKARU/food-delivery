@@ -192,7 +192,7 @@ func (h *Handler) UpdateProfile(c *gin.Context) {
 	})
 }
 
-// VerifyEmail handles email verification
+// VerifyEmail handles email verification via JSON (POST)
 func (h *Handler) VerifyEmail(c *gin.Context) {
 	var req services.VerifyEmailRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -212,6 +212,37 @@ func (h *Handler) VerifyEmail(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Email verified successfully",
+	})
+}
+
+// VerifyEmailLink handles email verification via URL link (GET)
+func (h *Handler) VerifyEmailLink(c *gin.Context) {
+	token := c.Query("token")
+	if token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Token is required",
+			"message": "Verification token not provided",
+		})
+		return
+	}
+
+	req := &services.VerifyEmailRequest{
+		Token: token,
+	}
+
+	if err := h.services.Auth.VerifyEmail(req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Email verification failed",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	// For deep links and web browsers, return JSON response
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
 		"message": "Email verified successfully",
 	})
 }
