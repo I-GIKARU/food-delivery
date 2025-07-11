@@ -44,6 +44,9 @@ type User struct {
 	EmailVerifiedAt   *time.Time     `json:"email_verified_at"`
 	PhoneVerifiedAt   *time.Time     `json:"phone_verified_at"`
 	LastLoginAt       *time.Time     `json:"last_login_at"`
+	EmailVerificationToken string    `json:"-"` // Token for email verification
+	PasswordResetToken     string    `json:"-"` // Token for password reset
+	PasswordResetExpires   *time.Time `json:"-"` // When password reset token expires
 	CreatedAt         time.Time      `json:"created_at"`
 	UpdatedAt         time.Time      `json:"updated_at"`
 	DeletedAt         gorm.DeletedAt `json:"-" gorm:"index"`
@@ -52,7 +55,7 @@ type User struct {
 	Addresses         []Address         `json:"addresses,omitempty"`
 	Orders            []Order           `json:"orders,omitempty"`
 	Reviews           []Review          `json:"reviews,omitempty"`
-	Restaurants       []Restaurant      `json:"restaurants,omitempty"` // For restaurant owners
+	Restaurants       []Restaurant      `json:"restaurants,omitempty" gorm:"foreignKey:OwnerID"` // For restaurant owners
 	DriverLocations   []DriverLocation  `json:"driver_locations,omitempty"` // For drivers
 	Notifications     []Notification    `json:"notifications,omitempty"`
 }
@@ -96,7 +99,7 @@ type County struct {
 
 	// Relationships
 	DeliveryZones []DeliveryZone `json:"delivery_zones,omitempty"`
-	Restaurants   []Restaurant   `json:"restaurants,omitempty"`
+	Restaurants   []Restaurant   `json:"restaurants,omitempty" gorm:"foreignKey:County;references:Name"`
 }
 
 // DeliveryZone represents areas where delivery is available

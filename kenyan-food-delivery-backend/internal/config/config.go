@@ -24,6 +24,13 @@ type Config struct {
 	SMTPPort     int
 	SMTPUsername string
 	SMTPPassword string
+	EmailFrom    string
+
+	// Cloudinary Configuration
+	CloudinaryCloudName string
+	CloudinaryAPIKey    string
+	CloudinaryAPISecret string
+	CloudinaryFolder    string
 	
 	// File Upload Configuration
 	MaxFileSize      int64
@@ -55,10 +62,17 @@ func Load() *Config {
 		MpesaEnvironment:    getEnv("MPESA_ENVIRONMENT", "sandbox"),
 		
 		// Email Configuration
-		SMTPHost:     getEnv("SMTP_HOST", "smtp.gmail.com"),
-		SMTPPort:     getEnvAsInt("SMTP_PORT", 587),
-		SMTPUsername: getEnv("SMTP_USERNAME", ""),
-		SMTPPassword: getEnv("SMTP_PASSWORD", ""),
+		SMTPHost:     getEnv("EMAIL_HOST", "smtp.gmail.com"),
+		SMTPPort:     getEnvAsInt("EMAIL_PORT", 587),
+		SMTPUsername: getEnv("EMAIL_USERNAME", ""),
+		SMTPPassword: getEnv("EMAIL_PASSWORD", ""),
+		EmailFrom:    getEnv("EMAIL_FROM", ""),
+
+		// Cloudinary Configuration
+		CloudinaryCloudName: getEnv("CLOUDINARY_CLOUD_NAME", ""),
+		CloudinaryAPIKey:    getEnv("CLOUDINARY_API_KEY", ""),
+		CloudinaryAPISecret: getEnv("CLOUDINARY_API_SECRET", ""),
+		CloudinaryFolder:    getEnv("CLOUDINARY_FOLDER", "food-delivery"),
 		
 		// File Upload Configuration
 		MaxFileSize:      getEnvAsInt64("MAX_FILE_SIZE", 10*1024*1024), // 10MB

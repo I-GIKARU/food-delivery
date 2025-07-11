@@ -14,10 +14,16 @@ type Services struct {
 	Payment    *PaymentService
 	Delivery   *DeliveryService
 	Auth       *AuthService
+	Email      *EmailService
+	Cloudinary *CloudinaryService
+	Upload     *UploadService
 }
 
 // New creates a new services instance
 func New(db *gorm.DB, cfg *config.Config) *Services {
+	cloudinaryService, _ := NewCloudinaryService(cfg) // Handle error in real application
+	uploadService, _ := NewUploadService(cfg) // Handle error in real application
+
 	return &Services{
 		User:       NewUserService(db, cfg),
 		Restaurant: NewRestaurantService(db, cfg),
@@ -25,6 +31,9 @@ func New(db *gorm.DB, cfg *config.Config) *Services {
 		Payment:    NewPaymentService(db, cfg),
 		Delivery:   NewDeliveryService(db, cfg),
 		Auth:       NewAuthService(db, cfg),
+		Email:      NewEmailService(cfg),
+		Cloudinary: cloudinaryService,
+		Upload:     uploadService,
 	}
 }
 

@@ -25,6 +25,10 @@ func Migrate(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&models.User{},
 		&models.Address{},
+		&models.County{},
+		&models.DeliveryZone{},
+		&models.Cuisine{},
+		&models.RestaurantCategory{},
 		&models.Restaurant{},
 		&models.Category{},
 		&models.MenuItem{},
@@ -33,10 +37,6 @@ func Migrate(db *gorm.DB) error {
 		&models.Payment{},
 		&models.Delivery{},
 		&models.Review{},
-		&models.DeliveryZone{},
-		&models.County{},
-		&models.Cuisine{},
-		&models.RestaurantCategory{},
 		&models.DriverLocation{},
 		&models.Notification{},
 	)

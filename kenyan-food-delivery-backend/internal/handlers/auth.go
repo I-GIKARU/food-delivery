@@ -192,3 +192,102 @@ func (h *Handler) UpdateProfile(c *gin.Context) {
 	})
 }
 
+// VerifyEmail handles email verification
+func (h *Handler) VerifyEmail(c *gin.Context) {
+	var req services.VerifyEmailRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Invalid request format",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	if err := h.services.Auth.VerifyEmail(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Email verification failed",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Email verified successfully",
+	})
+}
+
+// ForgotPassword handles forgot password request
+func (h *Handler) ForgotPassword(c *gin.Context) {
+	var req services.ForgotPasswordRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Invalid request format",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	if err := h.services.Auth.ForgotPassword(&req); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "Failed to process forgot password request",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "If an account with that email exists, a password reset link has been sent",
+	})
+}
+
+// ResetPassword handles password reset
+func (h *Handler) ResetPassword(c *gin.Context) {
+	var req services.ResetPasswordRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Invalid request format",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	if err := h.services.Auth.ResetPassword(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Password reset failed",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Password reset successfully",
+	})
+}
+
+// ResendVerificationEmail handles resending verification email
+func (h *Handler) ResendVerificationEmail(c *gin.Context) {
+	var req struct {
+		Email string `json:"email" binding:"required,email"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Invalid request format",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	if err := h.services.Auth.ResendVerificationEmail(req.Email); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Failed to resend verification email",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Verification email sent successfully",
+	})
+}
+

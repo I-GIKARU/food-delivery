@@ -170,6 +170,38 @@ The server will start on `http://localhost:8080`
 - `GET /api/v1/delivery/zones` - Get delivery zones
 - `GET /api/v1/delivery/fee` - Calculate delivery fee
 
+## User Roles
+
+The platform supports four distinct user roles with specific permissions:
+
+### 1. **Customer** (`customer`)
+- Browse restaurants and menus
+- Place orders
+- Make payments
+- Track deliveries
+- Leave reviews
+- Manage addresses
+
+### 2. **Restaurant Owner** (`restaurant_owner`)
+- Register and manage restaurants
+- Create and update menus
+- Process orders
+- Update order status
+- View analytics
+
+### 3. **Delivery Driver** (`delivery_driver`)
+- Accept delivery requests
+- Update delivery status
+- Track location
+- Manage availability
+
+### 4. **Admin** (`admin`)
+- Manage all users
+- Approve restaurants
+- View system analytics
+- Manage platform settings
+- Full access to all features
+
 ## M-Pesa Integration
 
 The platform integrates with Safaricom's M-Pesa API for seamless mobile payments:

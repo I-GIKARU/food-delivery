@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"errors"
 	"time"
 
@@ -112,5 +114,24 @@ func ValidateRefreshToken(tokenString string) (*Claims, error) {
 	}
 
 	return claims, nil
+}
+
+// GenerateRandomToken generates a random token for email verification or password reset
+func GenerateRandomToken(length int) (string, error) {
+	bytes := make([]byte, length)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(bytes), nil
+}
+
+// GenerateEmailVerificationToken generates a token for email verification
+func GenerateEmailVerificationToken() (string, error) {
+	return GenerateRandomToken(32) // 64 character hex string
+}
+
+// GeneratePasswordResetToken generates a token for password reset
+func GeneratePasswordResetToken() (string, error) {
+	return GenerateRandomToken(32) // 64 character hex string
 }
 

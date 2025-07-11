@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"kenyan-food-delivery/internal/auth"
 	"kenyan-food-delivery/internal/config"
 	"kenyan-food-delivery/internal/database"
 	"kenyan-food-delivery/internal/handlers"
@@ -22,6 +23,9 @@ func main() {
 
 	// Load configuration
 	cfg := config.Load()
+
+	// Initialize JWT auth
+	auth.Initialize(cfg.JWTSecret)
 
 	// Initialize database
 	db, err := database.Initialize(cfg.DatabaseURL)
@@ -82,6 +86,10 @@ func setupRoutes(router *gin.Engine, h *handlers.Handler) {
 			auth.POST("/login", h.Login)
 			auth.POST("/refresh", h.RefreshToken)
 			auth.POST("/logout", middleware.AuthRequired(), h.Logout)
+			auth.POST("/verify-email", h.VerifyEmail)
+			auth.POST("/forgot-password", h.ForgotPassword)
+			auth.POST("/reset-password", h.ResetPassword)
+			auth.POST("/resend-verification", h.ResendVerificationEmail)
 		}
 
 		// User routes
