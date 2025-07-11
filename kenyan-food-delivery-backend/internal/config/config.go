@@ -25,6 +25,7 @@ type Config struct {
 	SMTPUsername string
 	SMTPPassword string
 	EmailFrom    string
+	BackendURL   string
 
 	// Cloudinary Configuration
 	CloudinaryCloudName string
@@ -67,6 +68,7 @@ func Load() *Config {
 		SMTPUsername: getEnv("EMAIL_USERNAME", ""),
 		SMTPPassword: getEnv("EMAIL_PASSWORD", ""),
 		EmailFrom:    getEnv("EMAIL_FROM", ""),
+		BackendURL:   getEnv("BACKEND_URL", "http://localhost:8080"),
 
 		// Cloudinary Configuration
 		CloudinaryCloudName: getEnv("CLOUDINARY_CLOUD_NAME", ""),

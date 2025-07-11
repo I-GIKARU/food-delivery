@@ -47,8 +47,8 @@ func (s *EmailService) SendEmail(to, subject, body string) error {
 func (s *EmailService) SendEmailVerification(email, firstName, token string) error {
 	subject := "Verify Your Email - Kenyan Food Delivery"
 	
-	// Create verification URL (you should replace this with your frontend URL)
-	verifyURL := fmt.Sprintf("https://your-frontend-domain.com/verify-email?token=%s", token)
+	// Create verification URL using backend URL
+	verifyURL := fmt.Sprintf("%s/api/v1/auth/verify-email?token=%s", s.config.BackendURL, token)
 	
 	body := fmt.Sprintf(`
 		<html>
@@ -88,8 +88,8 @@ func (s *EmailService) SendEmailVerification(email, firstName, token string) err
 func (s *EmailService) SendPasswordReset(email, firstName, token string) error {
 	subject := "Reset Your Password - Kenyan Food Delivery"
 	
-	// Create reset URL (you should replace this with your frontend URL)
-	resetURL := fmt.Sprintf("https://your-frontend-domain.com/reset-password?token=%s", token)
+	// Create reset URL using backend URL
+	resetURL := fmt.Sprintf("%s/api/v1/auth/reset-password?token=%s", s.config.BackendURL, token)
 	
 	body := fmt.Sprintf(`
 		<html>
@@ -149,9 +149,9 @@ func (s *EmailService) SendWelcomeEmail(email, firstName string) error {
 				<p>🇰🇪 Traditional Kenyan • 🌶️ Swahili • 🇮🇳 Indian • 🇨🇳 Chinese • 🇮🇹 Italian</p>
 				
 				<div style="text-align: center; margin: 30px 0;">
-					<a href="https://your-frontend-domain.com/restaurants" style="background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-						Start Ordering Now
-					</a>
+					<p style="background-color: #28a745; color: white; padding: 12px 24px; border-radius: 5px; display: inline-block;">
+						Download our mobile app to start ordering!
+					</p>
 				</div>
 				
 				<p>Need help? Our customer support team is available 24/7 to assist you.</p>
