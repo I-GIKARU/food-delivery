@@ -334,6 +334,232 @@ func (h *Handler) ForgotPassword(c *gin.Context) {
 	})
 }
 
+// ResetPasswordLink handles password reset via URL link (GET)
+func (h *Handler) ResetPasswordLink(c *gin.Context) {
+	token := c.Query("token")
+	if token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Token is required",
+			"message": "Reset token not provided",
+		})
+		return
+	}
+
+	// Return HTML form for password reset
+	htmlResponse := `
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Reset Password - Kenyan Food Delivery</title>
+		<style>
+			body { 
+				font-family: Arial, sans-serif; 
+				margin: 0; 
+				padding: 20px; 
+				background-color: #f8f9fa;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+			}
+			.container {
+				background: white;
+				padding: 40px;
+				border-radius: 8px;
+				box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+				text-align: center;
+				max-width: 500px;
+				width: 100%;
+			}
+			.form-group {
+				margin-bottom: 20px;
+				text-align: left;
+			}
+			.form-group label {
+				display: block;
+				margin-bottom: 5px;
+				color: #333;
+				font-weight: bold;
+			}
+			.form-group input {
+				width: 100%;
+				padding: 12px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				font-size: 16px;
+				box-sizing: border-box;
+			}
+			.form-group input:focus {
+				outline: none;
+				border-color: #007bff;
+			}
+			.btn {
+				background-color: #007bff;
+				color: white;
+				padding: 12px 30px;
+				border: none;
+				border-radius: 4px;
+				font-size: 16px;
+				cursor: pointer;
+				width: 100%;
+			}
+			.btn:hover {
+				background-color: #0056b3;
+			}
+			h1 {
+				color: #333;
+				margin-bottom: 20px;
+			}
+			p {
+				color: #666;
+				margin-bottom: 20px;
+				line-height: 1.5;
+			}
+			.success-message {
+				background-color: #d4edda;
+				color: #155724;
+				padding: 12px;
+				border: 1px solid #c3e6cb;
+				border-radius: 4px;
+				margin-bottom: 20px;
+				display: none;
+			}
+			.error-message {
+				background-color: #f8d7da;
+				color: #721c24;
+				padding: 12px;
+				border: 1px solid #f5c6cb;
+				border-radius: 4px;
+				margin-bottom: 20px;
+				display: none;
+			}
+			.password-requirements {
+				background-color: #e3f2fd;
+				padding: 15px;
+				border-radius: 5px;
+				margin-bottom: 20px;
+				text-align: left;
+				font-size: 14px;
+			}
+			.password-requirements ul {
+				margin: 10px 0;
+				padding-left: 20px;
+			}
+			.password-requirements li {
+				margin-bottom: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Reset Your Password</h1>
+			<p>Enter your new password below to reset your account password.</p>
+			
+			<div class="success-message" id="successMessage">
+				Password reset successfully! You can now log in with your new password.
+			</div>
+			
+			<div class="error-message" id="errorMessage">
+				<!-- Error message will be displayed here -->
+			</div>
+			
+			<form id="resetPasswordForm" method="POST" action="/api/v1/auth/reset-password">
+				<input type="hidden" name="token" value="` + token + `">
+				
+				<div class="form-group">
+					<label for="password">New Password:</label>
+					<input type="password" id="password" name="password" required minlength="8">
+				</div>
+				
+				<div class="form-group">
+					<label for="confirmPassword">Confirm New Password:</label>
+					<input type="password" id="confirmPassword" name="confirmPassword" required minlength="8">
+				</div>
+				
+				<div class="password-requirements">
+					<strong>Password Requirements:</strong>
+					<ul>
+						<li>At least 8 characters long</li>
+						<li>Contains at least one uppercase letter</li>
+						<li>Contains at least one lowercase letter</li>
+						<li>Contains at least one number</li>
+						<li>Contains at least one special character</li>
+					</ul>
+				</div>
+				
+				<button type="submit" class="btn">Reset Password</button>
+			</form>
+			
+			<p style="margin-top: 30px; font-size: 12px; color: #999;">
+				Kenyan Food Delivery | Nairobi, Kenya
+			</p>
+		</div>
+		
+		<script>
+			document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
+				e.preventDefault();
+				
+				const password = document.getElementById('password').value;
+				const confirmPassword = document.getElementById('confirmPassword').value;
+				const token = document.querySelector('input[name="token"]').value;
+				const errorMessage = document.getElementById('errorMessage');
+				const successMessage = document.getElementById('successMessage');
+				
+				// Hide previous messages
+				errorMessage.style.display = 'none';
+				successMessage.style.display = 'none';
+				
+				// Validate passwords match
+				if (password !== confirmPassword) {
+					errorMessage.textContent = 'Passwords do not match';
+					errorMessage.style.display = 'block';
+					return;
+				}
+				
+				// Validate password requirements
+				if (password.length < 8) {
+					errorMessage.textContent = 'Password must be at least 8 characters long';
+					errorMessage.style.display = 'block';
+					return;
+				}
+				
+				// Submit form data as JSON
+				fetch('/api/v1/auth/reset-password', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						token: token,
+						password: password
+					})
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.message && data.message.includes('successfully')) {
+						successMessage.style.display = 'block';
+						document.getElementById('resetPasswordForm').style.display = 'none';
+					} else {
+						errorMessage.textContent = data.message || 'An error occurred';
+						errorMessage.style.display = 'block';
+					}
+				})
+				.catch(error => {
+					errorMessage.textContent = 'Network error. Please try again.';
+					errorMessage.style.display = 'block';
+				});
+			});
+		</script>
+	</body>
+	</html>
+	`
+	
+	c.Header("Content-Type", "text/html; charset=utf-8")
+	c.String(http.StatusOK, htmlResponse)
+}
+
 // ResetPassword handles password reset
 func (h *Handler) ResetPassword(c *gin.Context) {
 	var req services.ResetPasswordRequest
