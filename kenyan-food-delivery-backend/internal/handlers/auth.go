@@ -240,11 +240,74 @@ func (h *Handler) VerifyEmailLink(c *gin.Context) {
 		return
 	}
 
-	// For deep links and web browsers, return JSON response
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "Email verified successfully",
-	})
+	// Return HTML success page for web browsers
+	htmlResponse := `
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Email Verified - Kenyan Food Delivery</title>
+		<style>
+			body { 
+				font-family: Arial, sans-serif; 
+				margin: 0; 
+				padding: 20px; 
+				background-color: #f8f9fa;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+			}
+			.container {
+				background: white;
+				padding: 40px;
+				border-radius: 8px;
+				box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+				text-align: center;
+				max-width: 500px;
+			}
+			.success-icon {
+				font-size: 60px;
+				color: #28a745;
+				margin-bottom: 20px;
+			}
+			h1 {
+				color: #28a745;
+				margin-bottom: 20px;
+			}
+			p {
+				color: #666;
+				margin-bottom: 15px;
+				line-height: 1.5;
+			}
+			.app-info {
+				background-color: #e3f2fd;
+				padding: 20px;
+				border-radius: 5px;
+				margin-top: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="success-icon">✅</div>
+			<h1>Email Verified Successfully!</h1>
+			<p>Thank you for verifying your email address. Your account is now active and ready to use.</p>
+			<div class="app-info">
+				<h3>📱 Next Steps:</h3>
+				<p>Open the Kenyan Food Delivery mobile app on your device and log in with your credentials to start ordering delicious food!</p>
+			</div>
+			<p style="margin-top: 30px; font-size: 12px; color: #999;">
+				Kenyan Food Delivery | Nairobi, Kenya
+			</p>
+		</div>
+	</body>
+	</html>
+	`
+	
+	c.Header("Content-Type", "text/html; charset=utf-8")
+	c.String(http.StatusOK, htmlResponse)
 }
 
 // ForgotPassword handles forgot password request

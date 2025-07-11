@@ -47,8 +47,8 @@ func (s *EmailService) SendEmail(to, subject, body string) error {
 func (s *EmailService) SendEmailVerification(email, firstName, token string) error {
 	subject := "Verify Your Email - Kenyan Food Delivery"
 	
-	// Create verification URL using deep link scheme
-	verifyURL := fmt.Sprintf("kenyanfooddelivery://verify-email?token=%s", token)
+	// Create verification URL using backend URL
+	verifyURL := fmt.Sprintf("%s/api/v1/auth/verify-email?token=%s", s.config.BackendURL, token)
 	
 	body := fmt.Sprintf(`
 		<html>
@@ -88,8 +88,8 @@ func (s *EmailService) SendEmailVerification(email, firstName, token string) err
 func (s *EmailService) SendPasswordReset(email, firstName, token string) error {
 	subject := "Reset Your Password - Kenyan Food Delivery"
 	
-	// Create reset URL using deep link scheme
-	resetURL := fmt.Sprintf("kenyanfooddelivery://reset-password?token=%s", token)
+	// Create reset URL using backend URL
+	resetURL := fmt.Sprintf("%s/api/v1/auth/reset-password?token=%s", s.config.BackendURL, token)
 	
 	body := fmt.Sprintf(`
 		<html>
